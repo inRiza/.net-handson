@@ -1,0 +1,73 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Todo List";
+}
+
+<div class="container p-4">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <h1 class="text-center">My Todo List</h1>
+            <div class="card mb-4 mt-4">
+                <div class="card-body">
+                    <form method="post" asp-page-handler="Add">
+                        <div class="input-group">
+                            <input type="text" class="form-control" asp-for="NewTodoTitle"
+                                placeholder="Add a new task..." required />
+                            <button class="btn btn-primary" type="submit">
+                                Add new task
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    @if (Model.Todos.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var todo in Model.Todos)
+                            {
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center @(todo.IsCompleted ? "bg-light" : "")">
+                                    <div class="flex-grow-1">
+                                        <span class="@(todo.IsCompleted ? "text-decoration-line-through text-muted" : "")">
+                                            @todo.Title
+                                        </span>
+                                        <br />
+                                        <small class="text-muted">@todo.CreatedAt.ToString("dd MMM yyyy HH:mm")</small>
+                                    </div>
+
+                                    <div class="btn-group-md">
+                                        <form method="post" asp-page-handler="ToggleComplete" class="d-inline">
+                                            <input type="hidden" name="id" value="@todo.Id" />
+                                            <button type="submit"
+                                                class="btn btn-sm @(todo.IsCompleted ? "btn-light" : "btn-primary")">
+                                                @(todo.IsCompleted ? "Cancel" : "Done")
+                                            </button>
+                                        </form>
+
+                                        <form method="post" asp-page-handler="Delete" class="d-inline">
+                                            <input type="hidden" name="id" value="@todo.Id" />
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Delete this task?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted py-5">
+                            No task yet
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
